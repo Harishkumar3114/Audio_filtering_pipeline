@@ -1,0 +1,50 @@
+{
+  "phase2_input": 55,
+  "passed": 33,
+  "cer_rejected": 22,
+  "cer_threshold": 0.7,
+  "whisper_model": "large-v3",
+  "backend": "faster-whisper (3-stage pipeline)",
+  "per_language": {
+    "bengali": {
+      "total": 9,
+      "passed": 8,
+      "rejected": 1
+    },
+    "gujarati": {
+      "total": 5,
+      "passed": 3,
+      "rejected": 2
+    },
+    "hindi": {
+      "total": 7,
+      "passed": 4,
+      "rejected": 3
+    },
+    "kannada": {
+      "total": 5,
+      "passed": 4,
+      "rejected": 1
+    },
+    "malayalam": {
+      "total": 8,
+      "passed": 0,
+      "rejected": 8
+    },
+    "marathi": {
+      "total": 6,
+      "passed": 4,
+      "rejected": 2
+    },
+    "tamil": {
+      "total": 8,
+      "passed": 6,
+      "rejected": 2
+    },
+    "telugu": {
+      "total": 7,
+      "passed": 4,
+      "rejected": 3
+    }
+  }
+}

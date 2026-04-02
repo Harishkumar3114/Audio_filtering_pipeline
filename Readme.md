@@ -49,6 +49,14 @@ This project implements a highly scalable, automated curation pipeline that is d
 - **Streaming Data Extraction**: Bypasses memory bottlenecks by using hybrid Process/Thread pools to parse massive parquet files and write binary audio data directly to disk.
 
 ---
+
+### Architecture Pipeline
+![Audio Processing Pipeline](./pipeline_diagram.png)
+
+
+---
+
+
 ## Prerequisites and Installation
 
 ```bash
