@@ -246,12 +246,12 @@ WEIGHTS = {
 
 The final configuration was validated against three criteria before being accepted:
 
-**1. No language imbalance.** [Plot 3](./Validation_plot/plot3_per_language_rejection.png) confirmed that all 8 languages had rejection rates
+**1. No language imbalance.** [Plot 3](./Results_and_Report/Validation_plot/plot3_per_language_rejection.png) confirmed that all 8 languages had rejection rates
 within a narrow band. No language lost more than 2× the average rejection rate of the
 corpus, confirming that per-language normalisation of VAD, SNR, and ZCR was working as
 intended.
 
-**2. Threshold at a natural quality boundary.** [Plot 4](./Validation_plot/plot4_score_cdf.png) confirmed the threshold of 0.50
+**2. Threshold at a natural quality boundary.** [Plot 4](./Results_and_Report/Validation_plot/plot4_score_cdf.png) confirmed the threshold of 0.50
 sits at the inflection point of the score CDF — at a genuine quality cliff in the data
 rather than an arbitrary cutoff.
 
