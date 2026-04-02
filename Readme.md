@@ -161,17 +161,17 @@ It uses 6 Analytical plots - Boxplots, Histogram, Retention Curves, Heatmaps, IQ
 ### Key Inferences from Acoustic Visualizations
 
 #### A. Global vs. Per-Language Behavior
-* **Visual Evidence:** [Boxplots per Language](./Decision_plots_and_csv/01_boxplots_per_language.png) & [Histograms](./Decision_plots_and_csv/02_histograms_all_languages.png)
+* **Visual Evidence:** [Boxplots per Language](./Results_and_Report/Decision_plots_and_csv/01_boxplots_per_language.png) & [Histograms](./Results_and_Report/Decision_plots_and_csv/02_histograms_all_languages.png)
 * **Insight:** Metrics like `Waveform Kurtosis`, `Spectral Flatness`, and `ELR` are structurally stable across all languages (CV < 0.25). However, **VAD Ratio** (Voice Activity) and **SNR** (Signal-to-Noise) vary wildly. For instance, applying a global VAD threshold of >0.6 would preserve almost all Tamil data but delete over 40% of Hindi data.
 * **Decision:**  I used **Per-Language** thresholds and normalization for VAD Ratio and SNR, while relying on **Global** thresholds for the remaining metrics.
 
 #### B. Redundant Metrics & Hard Failures
-* **Visual Evidence:** [Metric Correlation Heatmap](./Decision_plots_and_csv/04_correlation_heatmap.png)
+* **Visual Evidence:** [Metric Correlation Heatmap](./Results_and_Report/Decision_plots_and_csv/04_correlation_heatmap.png)
 * **Insight:** `VAD Ratio` and `Silence Ratio` are almost perfectly inversely correlated ($r = -0.91). Using both over-penalizes the exact same audio flaw. Additionally, `Clipping Rate` has roughly zero correlation with acoustic metrics because it is a hardware-level digital error.
 * **Decision:** Completely drop `Silence Ratio` from the evaluation score. Treat `Clipping Rate` as a binary "Hard Reject" rather than a weighted metric.
 
 #### C. Language-Specific Quirks
-* **Visual Evidence:** [Language Quality Fingerprints (Radar)](./Decision_plots_and_csv/06_radar_language_profiles.png) & [Retention Curves](./Decision_plots_and_csv/03_retention_curves.png)
+* **Visual Evidence:** [Language Quality Fingerprints (Radar)](./Results_and_Report/Decision_plots_and_csv/06_radar_language_profiles.png) & [Retention Curves](./Results_and_Report/Decision_plots_and_csv/03_retention_curves.png)
 * **Insight:** Bengali exhibits a uniquely high Zero-Crossing Rate (ZCR) compared to the median dataset shape. 
 * **Decision:** ZCR must be moved to the **Per-Language** normalization group so Bengali audio is only evaluated against its own linguistic baseline.
 
@@ -212,15 +212,15 @@ total) produced the following result:
 - **Soft rejected:** ~41 files (below soft score threshold)
 - **Total removed:** ~53 files (2.2% rejection rate)
 
-This rejection rate is not accpetable and might not be true as when I manually verified samples and through plots around 10% of the audio samples were bad. Insights from plot from [plot after remove](plot_after_remove.py) is derived: 
+This rejection rate is not accpetable and might not be true as when I manually verified samples and through plots around 10% of the audio samples were bad. Insights from plot from [this code](Validation_plots.py):
 
-- **[Plot 1 (Score Distribution)](./Phase1_filter/Validation_plot/plot1_score_distribution.png):** Confirmed the initial 0.40 threshold was safe, as the vast majority of files comfortably clustered between 0.65 and 0.90.
+- **[Plot 1 (Score Distribution)](./Results_and_Report/Validation_plot/plot1_score_distribution.png):** Confirmed the initial 0.40 threshold was safe, as the vast majority of files comfortably clustered between 0.65 and 0.90.
 
-- **[Plot 2 (Passed vs. Rejected Boxplots)](./Phase1_filter/Validation_plot/plot2_metric_boxplot_pass_vs_reject.png):** Proved that SNR and VAD were the strongest discriminators for filtering bad audio, while metrics like spectral flatness had minimal impact.
+- **[Plot 2 (Passed vs. Rejected Boxplots)](./Results_and_Report/Validation_plot/plot2_metric_boxplot_pass_vs_reject.png):** Proved that SNR and VAD were the strongest discriminators for filtering bad audio, while metrics like spectral flatness had minimal impact.
 
-- **[Plot 3 (Per-Language Rejection)](./Phase1_filter/Validation_plot/plot3_per_language_rejection.png):** Validated that per-language normalization worked perfectly, ensuring no single language was disproportionately penalized.
+- **[Plot 3 (Per-Language Rejection)](./Results_and_Report/Validation_plot/plot3_per_language_rejection.png):** Validated that per-language normalization worked perfectly, ensuring no single language was disproportionately penalized.
 
-- **[Plot 4 (Soft Score CDF)](./Phase1_filter/Validation_plot/plot4_score_cdf.png):** Revealed a natural quality cliff around 0.50, pinpointing the exact boundary where acoustic quality genuinely drops.
+- **[Plot 4 (Soft Score CDF)](./Results_and_Report/Validation_plot/plot4_score_cdf.png):** Revealed a natural quality cliff around 0.50, pinpointing the exact boundary where acoustic quality genuinely drops.
 
 And these are the final configuration:
 
