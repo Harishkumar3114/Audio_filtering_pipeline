@@ -1,0 +1,49 @@
+{
+  "total_processed": 235386,
+  "hard_rejected": 4748,
+  "soft_rejected": 7732,
+  "passed": 222906,
+  "soft_threshold": 0.5,
+  "weights": {
+    "snr_db": 0.45,
+    "vad_ratio": 0.3,
+    "c50_db": 0.1,
+    "spectral_flatness": 0.05,
+    "zcr": 0.05,
+    "kurtosis": 0.05
+  },
+  "per_language": {
+    "bengali": {
+      "passed": 23547,
+      "rejected": 830
+    },
+    "gujarati": {
+      "passed": 20204,
+      "rejected": 639
+    },
+    "hindi": {
+      "passed": 36463,
+      "rejected": 3901
+    },
+    "kannada": {
+      "passed": 24455,
+      "rejected": 1571
+    },
+    "malayalam": {
+      "passed": 26193,
+      "rejected": 1168
+    },
+    "marathi": {
+      "passed": 25292,
+      "rejected": 1328
+    },
+    "tamil": {
+      "passed": 36136,
+      "rejected": 1539
+    },
+    "telugu": {
+      "passed": 30616,
+      "rejected": 1504
+    }
+  }
+}
