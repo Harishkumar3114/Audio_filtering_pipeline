@@ -59,8 +59,8 @@ python --version
 nvcc --version
 
 # 1. Clone the repository
-git clone <your-repo-link>
-cd <your-repo-folder>
+git clone https://github.com/Harishkumar3114/Audio_filtering_pipeline.git
+cd Audio_filtering_pipeline
 
 # 2. Recommended: Create and activate the Conda environment
 conda env create -f environment.yaml
@@ -100,14 +100,15 @@ python dataset_download.py --save_dir ./data
 
 ### Folder Structure:
 
+```
 data/
 ├── setup.log                          # Execution logs and error tracking
 ├── hf/                                # Raw Hugging Face dataset cache
 ├── audios/                            # Extracted, ready-to-use audio files
 │   ├── tamil/
-│   │   ├── train-00000-of-XXXXX/      # Grouped by the original parquet index
-│   │   │   ├── sample_1.flac
-│   │   │   └── sample_2.flac
+│   │   └── train-00000-of-XXXXX/      # Grouped by the original parquet index
+│   │       ├── sample_1.flac
+│   │       └── sample_2.flac
 │   ├── hindi/
 │   └── ... (other languages)
 └── manifests/                         # Metadata tracking
@@ -116,8 +117,7 @@ data/
     ├── hindi_manifests/
     └── combined_manifest.jsonl        # The MASTER manifest used for Phase 1
 
-
-
+```
 
 ---
 
@@ -212,7 +212,7 @@ total) produced the following result:
 - **Soft rejected:** ~41 files (below soft score threshold)
 - **Total removed:** ~53 files (2.2% rejection rate)
 
-This rejection rate is not accpetable and might not be true as when I manually verified samples and through plots around 10% of the audio samples were bad. Insights from plot from [plot_after_remove](plot_after_remove.py) is derived: 
+This rejection rate is not accpetable and might not be true as when I manually verified samples and through plots around 10% of the audio samples were bad. Insights from plot from [plot after remove](plot_after_remove.py) is derived: 
 
 - **[Plot 1 (Score Distribution)](./Phase1_filter/Validation_plot/plot1_score_distribution.png):** Confirmed the initial 0.40 threshold was safe, as the vast majority of files comfortably clustered between 0.65 and 0.90.
 
@@ -246,12 +246,12 @@ WEIGHTS = {
 
 The final configuration was validated against three criteria before being accepted:
 
-**1. No language imbalance.** [Plot 3](./Phase1_filter/Validation_plot/plot3_per_language_rejection.png) confirmed that all 8 languages had rejection rates
+**1. No language imbalance.** [Plot 3](./Validation_plot/plot3_per_language_rejection.png) confirmed that all 8 languages had rejection rates
 within a narrow band. No language lost more than 2× the average rejection rate of the
 corpus, confirming that per-language normalisation of VAD, SNR, and ZCR was working as
 intended.
 
-**2. Threshold at a natural quality boundary.** [Plot 4](./Phase1_filter//Validation_plot//plot4_score_cdf.png) confirmed the threshold of 0.50
+**2. Threshold at a natural quality boundary.** [Plot 4](./Validation_plot/plot4_score_cdf.png) confirmed the threshold of 0.50
 sits at the inflection point of the score CDF — at a genuine quality cliff in the data
 rather than an arbitrary cutoff.
 
@@ -261,8 +261,6 @@ files below the threshold had audibly worse quality — background noise, low sp
 or both — compared to files above it.
 
 **4. Rejection Rate:** Currently we have the rejection rate ~5%, we need to pass the remaining data that passed this phase to our Whisper model and SpeechBrain model.
-
-**5. The output is stored in [Filter_output](./Phase1_filter/) that contains [Rejected audio](./Phase1_filter/audio_rejected/), the [Hard Rejected audio](./Phase1_filter/hard_rejected.csv) and [Soft Rejected Audio](./Phase1_filter/soft_rejected.csv) and [Summary](./Phase1_filter/summary.json) how many samples accepted or rejected and the plots that shows the insights about data rejection inference per language - [Validation Plots](./Phase1_filter/Validation_plot/)
 
 ---
 
