@@ -18,13 +18,6 @@ The insights are saved in Readme.md'''
 
 
 
-ROOT      = "./data/audios"  
-OUTPUT    = "./Decision_plots_and_csv"
-SAVE_CSV  = "./Decision_plots_and_csv/metrics_sample.csv"
-LANGUAGES = ["hindi", "tamil", "telugu", "kannada", "malayalam", "bengali", "gujarati", "marathi"]
-N_SAMPLES = 400
-N_WORKERS = max(1, multiprocessing.cpu_count() - 1)
-print(f"Workers: {N_WORKERS}")
 
 import json
 import logging
@@ -48,6 +41,15 @@ logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("analysis")
 
+
+ROOT      = r"C:\Users\Admin\Desktop\New folder (2)\data\audios"  
+OUTPUT    = "./Decision_plots_and_csv"
+SAVE_CSV  = "./Decision_plots_and_csv/metrics_sample.csv"
+LANGUAGES = ["hindi", "tamil", "telugu", "kannada", "malayalam", "bengali", "gujarati", "marathi"]
+N_SAMPLES = 4000
+N_WORKERS = max(1, multiprocessing.cpu_count() - 1)
+print(f"Workers: {N_WORKERS}")
+
 LANG_PALETTE = [
     "#4C72B0", "#DD8452", "#55A868", "#C44E52",
     "#8172B2", "#937860", "#DA8BC3", "#8C8C8C",
@@ -64,8 +66,8 @@ plt.rcParams.update({
 })
 
 METRICS = [
-    "zcr", "clipping_rate", "silence_ratio", "kurtosis",
-    "spectral_flatness", "snr_db", "c50_db", "vad_ratio",
+    "zcr", "clipping_rate", "kurtosis",
+    "spectral_flatness", "snr_db", "c50_db", "vad_ratio", "silence_ratio",
 ]
 METRIC_LABELS = {
     "zcr":              "ZCR (zero-crossing rate)",
@@ -96,11 +98,7 @@ MIN_DURATION_S=0.3
 TARGET_SR = 16000
 
 def compute_snr_wada(signal, sr):
-    """
-    WADA-SNR proxy: sort frames by RMS power, treat bottom 20% as noise floor.
-    SNR = 10 * log10(mean_signal_power / mean_noise_power).
-    Reliable for read speech with inter-word pauses acting as noise samples.
-    """
+
     frames      = frame_signal(signal, sr)
     power       = np.mean(frames ** 2, axis=1) + EPS
     sorted_pow  = np.sort(power)
@@ -111,11 +109,7 @@ def compute_snr_wada(signal, sr):
 
 
 def compute_elr(signal, sr):
-    """
-    Early-to-Late energy Ratio — model-free proxy for C50.
-    ELR = 10 * log10(energy[0:50ms] / energy[50ms:])
-    High ELR = dry/clear room. Low ELR = reverberant environment.
-    """
+   
     t50   = int(0.050 * sr)
     if len(signal) <= t50:
         return 0.0
@@ -125,10 +119,7 @@ def compute_elr(signal, sr):
 
 
 def compute_vad_ratio(signal, sr):
-    """
-    Fraction of 30ms frames classified as voiced.
-    Voiced = RMS above adaptive floor AND ZCR below 0.3 (not pure noise).
-    """
+  
     frames    = frame_signal(signal, sr)
     rms_db    = 20 * np.log10(np.sqrt(np.mean(frames ** 2, axis=1) + EPS))
     zcr_per   = np.mean(np.abs(np.diff(np.sign(frames), axis=1)), axis=1) / 2
@@ -271,9 +262,10 @@ def _save(fig, out: Path, name: str):
 
 def plot_boxplots(df, languages, out):
     cmap = color_map(languages)
-    fig, axes = plt.subplots(4, 2, figsize=(16, 18))
+    fig, axes = plt.subplots(2, 3, figsize=(18, 10))  
     axes = axes.flatten()
-    for i, metric in enumerate(METRICS):
+    metrics_to_plot = METRICS[:6] 
+    for i, metric in enumerate(metrics_to_plot):
         ax   = axes[i]
         data = [df[df["language"] == l][metric].dropna().values for l in languages]
         bp   = ax.boxplot(
@@ -301,9 +293,10 @@ def plot_boxplots(df, languages, out):
 
 def plot_histograms(df, languages, out):
     cmap = color_map(languages)
-    fig, axes = plt.subplots(4, 2, figsize=(16, 18))
+    fig, axes = plt.subplots(2, 3, figsize=(18, 10))
     axes = axes.flatten()
-    for i, metric in enumerate(METRICS):
+    metrics_to_plot = METRICS[:6] 
+    for i, metric in enumerate(metrics_to_plot):
         ax    = axes[i]
         all_v = df[metric].dropna()
         bins  = np.linspace(all_v.quantile(0.01), all_v.quantile(0.99), 40)
